@@ -1,0 +1,46 @@
+# Entorno virtual
+venv/
+.env
+*.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de logs
+*.log
+
+# Configuración de editor/IDE
+.vscode/
+.idea/
+*.iml
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Datos temporales o de prueba
+*.sqlite3
+*.db
+tmp/
+temp/
+
+# Archivos de ejemplo grandes (opcional)
+samples/*.png
+samples/*.jpg
+samples/*.jpeg
+samples/*.tif
+samples/*.tiff
+
+# Coverage / testing
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+
+# Uvicorn / FastAPI artefactos temporales
+instance/
