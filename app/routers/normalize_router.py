@@ -1,3 +1,4 @@
+# app/routers/normalize_router.py
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
@@ -20,18 +21,19 @@ async def normalize(req: NormalizeRequest):
         return result
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    except RuntimeError as e:  # OPENAI_API_KEY missing or other config
+    except RuntimeError as e:  # falta OPENAI_API_KEY u otra config
         raise HTTPException(status_code=500, detail=str(e))
-    except Exception:
+    except Exception as e:
+        # 👇 mientras desarrollamos, mostramos el error real
         raise HTTPException(
             status_code=500,
-            detail="Error interno normalizando el texto.",
+            detail=f"Error interno normalizando el texto: {repr(e)}",
         )
 
 
 @router.post("/process")
 async def process(req: NormalizeRequest):
     """
-    Alias genérico /process para texto (la consigna lo pide).
+    Alias genérico /process para texto (misma lógica que /normalize).
     """
     return await normalize(req)

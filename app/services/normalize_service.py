@@ -39,6 +39,7 @@ No incluyas nada fuera del JSON.
 def get_client() -> OpenAI:
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
+        # Este error lo capturamos en el router
         raise RuntimeError("OPENAI_API_KEY no está configurada.")
     return OpenAI(api_key=api_key)
 
@@ -52,20 +53,23 @@ async def normalize_text(raw_text: str) -> Dict[str, Any]:
 
     client = get_client()
 
-    response = client.responses.create(
+    # Usamos chat.completions con respuesta en JSON
+    response = client.chat.completions.create(
         model="gpt-4o-mini",
-        input=[
+        response_format={"type": "json_object"},
+        messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": raw_text},
         ],
-        response_format={"type": "json_object"},
     )
 
-    json_str = response.output_text
+    json_str = response.choices[0].message.content
 
     try:
         data = json.loads(json_str)
     except json.JSONDecodeError:
+        # Si por alguna razón el modelo no devuelve JSON válido,
+        # devolvemos una estructura básica con el raw.
         return {
             "nombre": None,
             "apellidos": None,
